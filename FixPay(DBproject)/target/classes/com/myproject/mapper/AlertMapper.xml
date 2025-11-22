@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myproject.mapper.AlertMapper">
+    
+    <select id="get" resultType="com.myproject.domain.AlertVO">
+        SELECT * FROM Alert_Setting WHERE user_id = #{user_id}
+    </select>
+    
+    <insert id="register">
+        <selectKey keyProperty="alert_id" order="BEFORE" resultType="long">
+            select seq_alert_setting.nextval from dual
+        </selectKey>
+        INSERT INTO Alert_Setting (alert_id, user_id, days_before, is_active)
+        VALUES (#{alert_id}, #{user_id}, #{days_before}, #{is_active})
+    </insert>
+    
+    <update id="update">
+        UPDATE Alert_Setting
+        SET days_before = #{days_before}, is_active = #{is_active}
+        WHERE user_id = #{user_id}
+    </update>
+    
+</mapper>

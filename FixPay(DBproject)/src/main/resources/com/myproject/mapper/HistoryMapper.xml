@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myproject.mapper.HistoryMapper">
+    
+    <insert id="register">
+        <selectKey keyProperty="history_id" order="BEFORE" resultType="long">
+            select seq_payment_history.nextval from dual
+        </selectKey>
+        
+        insert into Payment_History (history_id, expense_id, paid_amount, payment_date, memo)
+        values (
+            #{history_id}, 
+            #{expense_id}, 
+            #{paid_amount}, 
+            #{payment_date}, 
+            #{memo, jdbcType=VARCHAR}  -- [!!!] 이 부분을 수정합니다.
+        )
+    </insert>
+    
+    <select id="getListByExpense" resultType="com.myproject.domain.HistoryVO">
+	    SELECT * FROM Payment_History
+	    WHERE expense_id = #{expense_id}
+	    ORDER BY payment_date DESC
+	</select>
+    
+</mapper>

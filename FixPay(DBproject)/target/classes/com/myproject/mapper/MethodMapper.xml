@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myproject.mapper.MethodMapper">
+    <select id="getList" resultType="com.myproject.domain.MethodVO">
+        SELECT * FROM Payment_Method WHERE user_id = #{user_id} ORDER BY name
+    </select>
+    
+    <insert id="register">
+        <selectKey keyProperty="method_id" order="BEFORE" resultType="long">
+            select seq_payment_method.nextval from dual
+        </selectKey>
+        INSERT INTO Payment_Method (method_id, user_id, name, type)
+        VALUES (#{method_id}, #{user_id}, #{name}, #{type})
+    </insert>
+    
+    <delete id="delete">
+        DELETE FROM Payment_Method WHERE method_id = #{method_id}
+    </delete>
+</mapper>

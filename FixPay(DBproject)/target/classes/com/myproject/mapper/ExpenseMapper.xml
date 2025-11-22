@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myproject.mapper.ExpenseMapper">
+    
+    <insert id="insertSelectKey">
+		<selectKey keyProperty="expense_id" order="BEFORE" resultType="long">
+			select seq_fixed_expense.nextval from dual
+		</selectKey>
+
+		insert into Fixed_Expense 
+		(expense_id, name, amount, payment_day, user_id, 
+		 category_id, cycle_id, method_id, is_active) -- 1. is_active 추가 (이전 수정)
+		values 
+		(#{expense_id}, #{name}, #{amount}, #{payment_day}, #{user_id}, 
+		 #{category_id, jdbcType=NUMERIC},  -- 2. NUMERIC (or BIGINT)
+		 #{cycle_id, jdbcType=NUMERIC},    -- 3. NUMERIC (or BIGINT)
+		 #{method_id, jdbcType=NUMERIC},  -- 4. NUMERIC (or BIGINT)
+		 1) -- 5. is_active 기본값 1
+	</insert>
+	
+	<select id="read" resultType="com.myproject.domain.ExpenseVO">
+  		select * from Fixed_Expense 
+  		where expense_id = #{expense_id}
+  		AND is_active = 1  -- [!!!] '활성' 상태인 것만 조회
+	</select>
+	
+	<update id="delete" >
+	    UPDATE Fixed_Expense
+	    SET 
+	        is_active = 0,
+	        category_id = NULL,  /* 1. 카테고리 연결 해제 */
+	        method_id = NULL,    /* 2. 결제 수단 연결 해제 */
+	        cycle_id = NULL      /* 3. 결제 주기 연결 해제 */
+	    WHERE expense_id = #{expense_id}
+	</update>
+	
+	<update id="update">
+	    update Fixed_Expense
+	    set name = #{name},
+	    amount = #{amount},
+	    payment_day = #{payment_day},
+	    category_id = #{category_id},
+	    method_id = #{method_id},
+	    cycle_id = #{cycle_id}
+	    where expense_id = #{expense_id}
+	</update>
+	
+	<select id="getListWithPaging" resultType="com.myproject.domain.ExpenseVO">
+    <![CDATA[
+    select 
+        expense_id, name, amount, payment_day, 
+        category_name, method_name,
+        cycle_name  /* 1. 최종 SELECT에 cycle_name 추가 */
+    from (    
+        select /*+INDEX_DESC(Fixed_Expense pk_fixed_expense) */ 
+            rownum rn, 
+            e.expense_id, e.name, e.amount, e.payment_day,
+            c.name as category_name,
+            m.name as method_name,
+            cy.name as cycle_name  /* 2. JOIN 결과 별명(cycle_name) 추가 */
+        from Fixed_Expense e
+        LEFT JOIN Category c ON e.category_id = c.category_id
+        LEFT JOIN Payment_Method m ON e.method_id = m.method_id
+        
+        LEFT JOIN Payment_Cycle cy ON e.cycle_id = cy.cycle_id  /* 3. 'Cycle' -> 'Payment_Cycle'로 수정 */
+        
+        where e.user_id = #{user_id}
+        AND e.is_active = 1
+        AND rownum <= #{pageNum} * #{amount} 
+    ) 
+    where rn > (#{pageNum} -1) * #{amount} 
+    ]]>
+</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*) from Fixed_Expense 
+		where user_id = #{user_id}
+		AND is_active = 1  -- [!!!] '활성' 상태인 것만
+	</select>
+
+	<select id="getCategoryStats" resultType="com.myproject.domain.StatsDTO">
+	    SELECT
+	        NVL(c.name, '삭제된 항목') as category_name, 
+	        SUM(h.paid_amount) as total_amount
+	    FROM Payment_History h
+	    JOIN Fixed_Expense e ON h.expense_id = e.expense_id
+	    
+	    LEFT JOIN Category c ON e.category_id = c.category_id
+	    
+	    WHERE
+	        e.user_id = #{user_id}
+	    GROUP BY
+	        NVL(c.name, '삭제된 항목') ORDER BY
+	        total_amount DESC
+	</select>
+    
+    <select id="getAllExpenses" resultType="com.myproject.domain.ExpenseVO">
+	    SELECT
+	        e.expense_id, e.name, e.amount, e.payment_day, e.category_id,
+	        c.name as category_name
+	    FROM Fixed_Expense e
+	    LEFT JOIN Category c ON e.category_id = c.category_id
+	    WHERE e.user_id = #{user_id}
+	    AND e.is_active = 1  -- [!!!] '활성' 상태인 것만
+	    ORDER BY e.payment_day
+	</select>
+	
+</mapper>
