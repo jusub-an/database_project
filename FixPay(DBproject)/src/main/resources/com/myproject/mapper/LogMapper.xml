@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myproject.mapper.LogMapper"> 
+
+	<insert id="insert">
+	    <selectKey keyProperty="log_id" order="BEFORE" resultType="long">
+	        select seq_expense_log.nextval from dual
+	    </selectKey>
+	    INSERT INTO Expense_Log 
+	    (log_id, user_id, expense_name, category_name, method_name, amount, payment_date)
+	    VALUES
+	    (
+	        #{log_id}, 
+	        #{user_id}, 
+	        #{expense_name, jdbcType=VARCHAR},   #{category_name, jdbcType=VARCHAR},  #{method_name, jdbcType=VARCHAR},    #{amount}, 
+	        #{payment_date}
+	    )
+	</insert>
+
+    <select id="getMonthlyStats" resultType="java.util.Map">
+        SELECT 
+            TO_CHAR(payment_date, 'YYYY-MM') as "MONTH", 
+            SUM(amount) as "TOTAL"
+        FROM Expense_Log
+        WHERE user_id = #{user_id}
+        GROUP BY TO_CHAR(payment_date, 'YYYY-MM')
+        ORDER BY "MONTH" ASC
+    </select>
+    
+</mapper>

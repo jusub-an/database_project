@@ -24,5 +24,8 @@ public class ExpenseVO {
     private int is_active;
     
     private String cycle_name;
+    
+ // ✨ [추가] 화면 표시용 D-Day 변수 (DB 컬럼 아님)
+    private int d_day;
 
 }

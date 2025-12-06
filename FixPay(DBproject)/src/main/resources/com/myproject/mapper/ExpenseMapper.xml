@@ -21,20 +21,21 @@
 	</insert>
 	
 	<select id="read" resultType="com.myproject.domain.ExpenseVO">
-  		select * from Fixed_Expense 
-  		where expense_id = #{expense_id}
-  		AND is_active = 1  -- [!!!] '활성' 상태인 것만 조회
+	    SELECT 
+	        e.expense_id, e.name, e.amount, e.payment_day, e.user_id,
+	        e.category_id, e.method_id, e.cycle_id, e.is_active,
+	        c.name as category_name,   m.name as method_name,     cy.name as cycle_name      FROM Fixed_Expense e
+	    LEFT JOIN Category c ON e.category_id = c.category_id
+	    LEFT JOIN Payment_Method m ON e.method_id = m.method_id
+	    LEFT JOIN Payment_Cycle cy ON e.cycle_id = cy.cycle_id
+	    WHERE e.expense_id = #{expense_id}
+	    AND e.is_active = 1
 	</select>
 	
-	<update id="delete" >
-	    UPDATE Fixed_Expense
-	    SET 
-	        is_active = 0,
-	        category_id = NULL,  /* 1. 카테고리 연결 해제 */
-	        method_id = NULL,    /* 2. 결제 수단 연결 해제 */
-	        cycle_id = NULL      /* 3. 결제 주기 연결 해제 */
-	    WHERE expense_id = #{expense_id}
-	</update>
+	<delete id="delete">
+    DELETE FROM Fixed_Expense
+    WHERE expense_id = #{expense_id}
+	</delete>
 	
 	<update id="update">
 	    update Fixed_Expense
@@ -81,19 +82,15 @@
 	</select>
 
 	<select id="getCategoryStats" resultType="com.myproject.domain.StatsDTO">
-	    SELECT
-	        NVL(c.name, '삭제된 항목') as category_name, 
-	        SUM(h.paid_amount) as total_amount
-	    FROM Payment_History h
-	    JOIN Fixed_Expense e ON h.expense_id = e.expense_id
-	    
-	    LEFT JOIN Category c ON e.category_id = c.category_id
-	    
-	    WHERE
-	        e.user_id = #{user_id}
-	    GROUP BY
-	        NVL(c.name, '삭제된 항목') ORDER BY
-	        total_amount DESC
+    SELECT
+        c.name as category_name,
+        SUM(h.paid_amount) as total_amount
+    FROM Payment_History h
+    JOIN Fixed_Expense e ON h.expense_id = e.expense_id
+    JOIN Category c ON e.category_id = c.category_id
+    WHERE e.user_id = #{user_id}
+    GROUP BY c.name
+    ORDER BY total_amount DESC
 	</select>
     
     <select id="getAllExpenses" resultType="com.myproject.domain.ExpenseVO">
@@ -105,6 +102,24 @@
 	    WHERE e.user_id = #{user_id}
 	    AND e.is_active = 1  -- [!!!] '활성' 상태인 것만
 	    ORDER BY e.payment_day
+	</select>
+	
+	<select id="getUpcomingExpenses" resultType="com.myproject.domain.ExpenseVO">
+    SELECT * FROM Fixed_Expense
+    WHERE user_id = #{user_id}
+    AND is_active = 1
+    AND (
+        <choose>
+            <when test="startDay &lt;= endDay">
+                payment_day BETWEEN #{startDay} AND #{endDay}
+            </when>
+            
+            <otherwise>
+                (payment_day >= #{startDay} OR payment_day &lt;= #{endDay})
+            </otherwise>
+        </choose>
+    )
+    ORDER BY payment_day ASC
 	</select>
 	
 </mapper>

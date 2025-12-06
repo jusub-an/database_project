@@ -25,7 +25,95 @@
     <link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
     <link href="/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
+	
+	<style>
+        /* 1. 전체 폰트 및 배경 변경 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f6f9; /* 아주 연한 회색 배경 */
+            color: #333;
+        }
+        
+        /* 2. 패널(박스) 디자인: 그림자 추가, 테두리 제거, 둥근 모서리 */
+        .panel {
+            border: none !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+            border-radius: 12px !important;
+            margin-bottom: 25px;
+        }
+        .panel-heading {
+            background-color: #fff !important;
+            border-bottom: 1px solid #f0f0f0 !important;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 700;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            color: #444 !important;
+        }
+        .panel-body {
+            padding: 20px;
+        }
+        
+        /* 3. 버튼 디자인: 둥글고 플랫하게 */
+        .btn {
+            border-radius: 8px !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-weight: 500;
+            padding: 8px 16px;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .btn-primary { background-color: #4e73df; } /* 모던한 블루 */
+        .btn-success { background-color: #1cc88a; } /* 모던한 그린 */
+        .btn-danger  { background-color: #e74a3b; } /* 모던한 레드 */
+        
+        /* 4. 테이블 디자인 */
+        .table > thead > tr > th {
+            border-bottom: 2px solid #e3e6f0;
+            color: #666;
+            font-weight: 600;
+        }
+        .table-hover > tbody > tr:hover {
+            background-color: #f8f9fc;
+        }
+        
+        /* 5. 입력 폼 디자인 */
+        .form-control {
+            border-radius: 8px;
+            height: 45px; /* 입력창 높여서 터치감 개선 */
+            border: 1px solid #d1d3e2;
+        }
+        .form-control:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        /* 6. 모달창 디자인 */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            border-radius: 15px 15px 0 0;
+            background-color: #4e73df; /* 헤더 색상 통일 */
+            color: white;
+        }
+        .modal-title { font-weight: bold; }
+        .close { color: white; opacity: 0.8; text-shadow: none; }
+        .close:hover { opacity: 1; color: white; }
+        
+        /* 7. 알림 뱃지 디자인 */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+    </style>
     </head>
 
 <body>

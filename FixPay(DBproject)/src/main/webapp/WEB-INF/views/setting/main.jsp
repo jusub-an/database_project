@@ -2,6 +2,40 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@include file="../includes/header.jsp"%>
 
+
+<style>
+    /* 탭 네비게이션 디자인 */
+    .nav-pills > li > a {
+        border-radius: 8px;
+        font-weight: 600;
+        color: #858796;
+        background-color: #fff;
+        margin-right: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .nav-pills > li.active > a, 
+    .nav-pills > li.active > a:focus, 
+    .nav-pills > li.active > a:hover {
+        background-color: #4e73df; /* 브랜드 컬러 */
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(78, 115, 223, 0.3);
+    }
+    .tab-content {
+        margin-top: 25px;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.03);
+    }
+    h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f0f2f5;
+        padding-bottom: 15px;
+        font-size: 1.4em;
+        color: #333;
+    }
+</style>
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">통합 설정</h1>
