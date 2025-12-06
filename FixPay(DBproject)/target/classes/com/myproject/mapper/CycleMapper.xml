@@ -4,6 +4,12 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myproject.mapper.CycleMapper">
     <select id="getList" resultType="com.myproject.domain.CycleVO">
-        SELECT * FROM Payment_Cycle ORDER BY months_interval
-    </select>
+	    SELECT 
+	        cy.cycle_id, cy.name, cy.months_interval,
+	        (SELECT COUNT(*) FROM Fixed_Expense e 
+	         WHERE e.cycle_id = cy.cycle_id 
+	         AND e.user_id = #{user_id} AND e.is_active = 1) as expenseCount
+	    FROM Payment_Cycle cy
+	    ORDER BY cy.months_interval
+	</select>
 </mapper>

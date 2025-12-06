@@ -4,8 +4,16 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myproject.mapper.MethodMapper">
     <select id="getList" resultType="com.myproject.domain.MethodVO">
-        SELECT * FROM Payment_Method WHERE user_id = #{user_id} ORDER BY name
-    </select>
+	    SELECT 
+	        m.method_id, m.user_id, m.name, m.type,
+	        (SELECT COUNT(*) FROM Fixed_Expense e 
+	         WHERE e.method_id = m.method_id 
+	         AND e.user_id = #{user_id} 
+	         AND e.is_active = 1) as expenseCount
+	    FROM Payment_Method m
+	    WHERE m.user_id = #{user_id}
+	    ORDER BY m.name
+	</select>
     
     <insert id="register">
         <selectKey keyProperty="method_id" order="BEFORE" resultType="long">

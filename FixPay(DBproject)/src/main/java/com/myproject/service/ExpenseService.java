@@ -1,6 +1,8 @@
 package com.myproject.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.myproject.domain.Criteria;
 import com.myproject.domain.ExpenseVO;
 import com.myproject.domain.StatsDTO;
@@ -23,4 +25,10 @@ public interface ExpenseService {
 	public List<StatsDTO> getCategoryStats(Long user_id);
 	
 	public List<ExpenseVO> getAllExpenses(Long user_id);
+	
+	public List<Map<String, Object>> getDashboardData(
+            Long user_id, 
+            List<String> categoryList, 
+            List<String> methodList, 
+            List<String> cycleList);
 }

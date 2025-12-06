@@ -6,4 +6,6 @@ public class MethodVO {
     private Long user_id;
     private String name;
     private String type;
+    
+    private int expenseCount;
 }

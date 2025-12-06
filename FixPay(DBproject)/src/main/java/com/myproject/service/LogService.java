@@ -3,6 +3,7 @@ package com.myproject.service;
 import java.util.List;
 import java.util.Map;
 import com.myproject.domain.LogVO;
+import com.myproject.domain.StatsDTO;
 
 public interface LogService {
     
@@ -11,4 +12,6 @@ public interface LogService {
     
     // 2. 로그 저장하기 (HistoryService에서 사용 가능)
     public void register(LogVO log);
+    
+    public Map<String, Object> getDashboardData(Long user_id, String category_name, String method_name);
 }

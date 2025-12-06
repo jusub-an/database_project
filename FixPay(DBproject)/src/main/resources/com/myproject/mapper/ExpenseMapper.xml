@@ -122,4 +122,44 @@
     ORDER BY payment_day ASC
 	</select>
 	
+	<select id="getFilteredHistory" resultType="java.util.Map">
+	    SELECT 
+	        h.paid_amount as "AMOUNT",
+	        TO_CHAR(h.payment_date, 'YYYY-MM') as "PAY_MONTH",
+	        TO_CHAR(h.payment_date, 'YYYY-MM-DD') as "PAY_DATE",
+	        e.name as "EXPENSE_NAME",
+	        c.name as "CATEGORY_NAME",
+	        m.name as "METHOD_NAME",
+	        cy.name as "CYCLE_NAME"
+	    FROM Payment_History h
+	    JOIN Fixed_Expense e ON h.expense_id = e.expense_id
+	    LEFT JOIN Category c ON e.category_id = c.category_id
+	    LEFT JOIN Payment_Method m ON e.method_id = m.method_id
+	    LEFT JOIN Payment_Cycle cy ON e.cycle_id = cy.cycle_id
+	    WHERE e.user_id = #{user_id}
+	    
+	    <if test="categoryList != null and categoryList.size() > 0">
+	        AND c.name IN
+	        <foreach item="item" collection="categoryList" open="(" separator="," close=")">
+	            #{item}
+	        </foreach>
+	    </if>
+	    
+	    <if test="methodList != null and methodList.size() > 0">
+	        AND m.name IN
+	        <foreach item="item" collection="methodList" open="(" separator="," close=")">
+	            #{item}
+	        </foreach>
+	    </if>
+	    
+	    <if test="cycleList != null and cycleList.size() > 0">
+	        AND cy.name IN
+	        <foreach item="item" collection="cycleList" open="(" separator="," close=")">
+	            #{item}
+	        </foreach>
+	    </if>
+	    
+	    ORDER BY h.payment_date ASC
+	</select>
+	
 </mapper>

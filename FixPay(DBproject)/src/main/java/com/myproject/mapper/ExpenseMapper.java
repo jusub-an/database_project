@@ -1,6 +1,7 @@
 package com.myproject.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.myproject.domain.Criteria;
 import com.myproject.domain.ExpenseVO;
@@ -41,4 +42,9 @@ public interface ExpenseMapper {
             @Param("startDay") int startDay, 
             @Param("endDay") int endDay
     );
+    public List<Map<String, Object>> getFilteredHistory(
+            @Param("user_id") Long user_id, 
+            @Param("categoryList") List<String> categoryList, 
+            @Param("methodList") List<String> methodList,
+            @Param("cycleList") List<String> cycleList);
 }

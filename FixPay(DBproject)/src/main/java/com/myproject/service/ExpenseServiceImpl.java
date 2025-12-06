@@ -1,6 +1,8 @@
 package com.myproject.service;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import com.myproject.domain.Criteria;
 import com.myproject.domain.ExpenseVO;
@@ -65,5 +67,15 @@ public class ExpenseServiceImpl implements ExpenseService {
     public List<ExpenseVO> getAllExpenses(Long user_id) {
         log.info("get All expenses for user: " + user_id);
         return mapper.getAllExpenses(user_id);
+    }
+	
+	@Override
+    public List<Map<String, Object>> getDashboardData(
+            Long user_id, 
+            List<String> categoryList, 
+            List<String> methodList, 
+            List<String> cycleList) {
+            
+        return mapper.getFilteredHistory(user_id, categoryList, methodList, cycleList);
     }
 }

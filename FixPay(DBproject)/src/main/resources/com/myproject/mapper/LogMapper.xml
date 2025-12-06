@@ -29,4 +29,48 @@
         ORDER BY "MONTH" ASC
     </select>
     
+    <select id="getFilteredMonthlyStats" resultType="java.util.Map">
+        SELECT 
+            TO_CHAR(payment_date, 'YYYY-MM') as "MONTH", 
+            SUM(amount) as "TOTAL"
+        FROM Expense_Log
+        WHERE user_id = #{user_id}
+        <if test="category_name != null and category_name != ''">
+            AND category_name = #{category_name}
+        </if>
+        <if test="method_name != null and method_name != ''">
+            AND method_name = #{method_name}
+        </if>
+        GROUP BY TO_CHAR(payment_date, 'YYYY-MM')
+        ORDER BY "MONTH" ASC
+    </select>
+
+    <select id="getFilteredCategoryStats" resultType="com.myproject.domain.StatsDTO">
+        SELECT 
+            category_name, 
+            SUM(amount) as total_amount
+        FROM Expense_Log
+        WHERE user_id = #{user_id}
+        <if test="category_name != null and category_name != ''">
+            AND category_name = #{category_name}
+        </if>
+        <if test="method_name != null and method_name != ''">
+            AND method_name = #{method_name}
+        </if>
+        GROUP BY category_name
+        ORDER BY total_amount DESC
+    </select>
+    
+    <select id="getFilteredLogList" resultType="com.myproject.domain.LogVO">
+        SELECT * FROM Expense_Log
+        WHERE user_id = #{user_id}
+        <if test="category_name != null and category_name != ''">
+            AND category_name = #{category_name}
+        </if>
+        <if test="method_name != null and method_name != ''">
+            AND method_name = #{method_name}
+        </if>
+        ORDER BY payment_date DESC
+    </select>
+    
 </mapper>

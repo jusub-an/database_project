@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 public class CycleServiceImpl implements CycleService {
     private CycleMapper mapper;
     @Override
-    public List<CycleVO> getList() {
-        return mapper.getList();
+    public List<CycleVO> getList(Long user_id) {
+        return mapper.getList(user_id);
     }
 }

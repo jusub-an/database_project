@@ -5,10 +5,16 @@
 <mapper namespace="com.myproject.mapper.CategoryMapper">
     
     <select id="getList" resultType="com.myproject.domain.CategoryVO">
-        SELECT * FROM Category
-        WHERE user_id = #{user_id} OR user_id IS NULL
-        ORDER BY user_id DESC, name ASC
-    </select>
+	    SELECT 
+	        c.category_id, c.name, c.user_id,
+	        (SELECT COUNT(*) FROM Fixed_Expense e 
+	         WHERE e.category_id = c.category_id 
+	         AND e.user_id = #{user_id} 
+	         AND e.is_active = 1) as expenseCount
+	    FROM Category c
+	    WHERE c.user_id = #{user_id} OR c.user_id IS NULL
+	    ORDER BY c.user_id DESC, c.name ASC
+	</select>
     
     <select id="get" resultType="com.myproject.domain.CategoryVO">
         SELECT * FROM Category WHERE category_id = #{category_id}

@@ -46,7 +46,7 @@ public class ExpenseController {
 		// 5. 드롭다운 목록을 DB에서 조회
 		model.addAttribute("categoryList", categoryService.getList(loginUser.getUser_id()));
 		model.addAttribute("methodList", methodService.getList(loginUser.getUser_id()));
-		model.addAttribute("cycleList", cycleService.getList());
+		model.addAttribute("cycleList", cycleService.getList(loginUser.getUser_id()));
 		
 		// /WEB-INF/views/expense/register.jsp 로 이동
 	}
@@ -99,7 +99,7 @@ public class ExpenseController {
 		 // 5. [추가] register(GET)와 동일하게 드롭다운 목록을 조회
 		 model.addAttribute("categoryList", categoryService.getList(loginUser.getUser_id()));
 		 model.addAttribute("methodList", methodService.getList(loginUser.getUser_id()));
-		 model.addAttribute("cycleList", cycleService.getList());
+		 model.addAttribute("cycleList", cycleService.getList(loginUser.getUser_id()));
 		 
 		 // 6. [기존] 수정할 항목의 상세 정보 조회
 		 model.addAttribute("expense", service.get(expense_id));
